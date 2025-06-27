@@ -2,15 +2,18 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import useAuth from '../hooks/useAuth';
 import GoogleLogin from '../socalLogin/GoogleLogin';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 
 const Register = () => {
     const {register, handleSubmit, formState: {errors}} = useForm();
     const {registerUser} = useAuth();
+    const location = useLocation();
+    const navigate = useNavigate();
     const onSubmit = (data) =>{
       //  register user
       registerUser(data.email, data.password)
       .then(result => {
+        navigate( location.state || '/')
         console.log(result.user)
       })
       .catch(error => {

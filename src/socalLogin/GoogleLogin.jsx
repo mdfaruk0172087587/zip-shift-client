@@ -1,16 +1,27 @@
 import React from 'react';
 import useAuth from '../hooks/useAuth';
+import Swal from 'sweetalert2';
+import { useLocation, useNavigate } from 'react-router';
 
 const GoogleLogin = () => {
-    const {googleLogin} = useAuth();
+    const { googleLogin } = useAuth();
+    const location = useLocation();
+    const navigate = useNavigate();
     const handleGoogleLogin = () => {
         googleLogin()
-        .then(result => {
-            console.log(result.user)
-        })
-        .catch(error => {
-            console.log(error)
-        })
+            .then(() => {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Your work has been saved",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                navigate( location.state || '/')
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
     return (
         <div className='text-center '>

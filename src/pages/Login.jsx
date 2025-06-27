@@ -1,13 +1,38 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import GoogleLogin from '../socalLogin/GoogleLogin';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
+import useAuth from '../hooks/useAuth';
+import Swal from 'sweetalert2';
 
 const Login = () => {
-    const {register, handleSubmit, formState: {errors}} = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { signIn } = useAuth();
 
     const onSubmit = (data) => {
-        console.log(data)
+        // sing i n
+        signIn(data.email, data.password)
+            .then(() => {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Your work has been saved",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                navigate(location.state || '/')
+            })
+            .catch(error => {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: error.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            })
     }
     return (
         <div>
@@ -17,7 +42,7 @@ const Login = () => {
                     <input type="email" {...register('email')} className="input" placeholder="Email" />
 
                     <label className="label">Password</label>
-                    <input type="password" {...register('password', {required : true, minLength: 6})} className="input" placeholder="Password" />
+                    <input type="password" {...register('password', { required: true, minLength: 6 })} className="input" placeholder="Password" />
                     {
                         errors.password?.type === 'required' && <p className='text-red-600'>
                             password wel be required
